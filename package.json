@@ -6,6 +6,10 @@
   "scripts": {
     "build": "tsc"
   },
+  "author": {
+    "name": "1nch",
+    "url": "https://discord.com/users/787143988514914324"
+  },
   "devDependencies": {
     "@types/node": "^18.11.9",
     "@typescript-eslint/eslint-plugin": "^5.42.0",
@@ -23,5 +27,13 @@
       "import": "./build/braille.js",
       "require": "./build/braille.js"
     }
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1nchhh/progressbar-ts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/1nchhh/progressbar-ts/issues"
+  },
+  "homepage": "https://github.com/1nchhh/progressbar-ts#readme"
 }
