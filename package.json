@@ -1,6 +1,6 @@
 {
   "name": "ezpb",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Zero dependency progress bar for node.js with complete typescript support",
   "main": "build",
   "scripts": {
@@ -35,5 +35,6 @@
   "bugs": {
     "url": "https://github.com/1nchhh/progressbar-ts/issues"
   },
-  "homepage": "https://github.com/1nchhh/progressbar-ts#readme"
+  "homepage": "https://github.com/1nchhh/progressbar-ts#readme",
+  "license": "GPL-3.0"
 }
