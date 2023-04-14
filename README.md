@@ -92,7 +92,7 @@ const character5 = BrailleCharacter.fromPercent(0.5, 'clockwise'); // display st
 
 #### Note on binary numbers
 
-The binary numbers used in this module are in the following format `(x, y): binary literal [bit mask]` where (0, 0) is the top left dot and (3, 1) is the bottom right dot:
+The binary numbers used in this module are in the following format below `(x, y): binary literal [bit mask]` where (0, 0) is the top left dot and (3, 1) is the bottom right dot:
 
 ```typescript
 (0, 0): 0b00000001 [1 << 0]
