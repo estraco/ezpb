@@ -87,7 +87,7 @@ const character4 = BrailleCharacter.fromGrid([
     [false, false],
     [false, false]
 ]);
-const character5 = BrailleCharacter.fromPercent(0.5, 'clockwise'); // display style are defined as an enum at BrailleStyleEnum, a type alias at BrailleStyle, and an array at BrailleStyleArray
+const character5 = BrailleCharacter.fromPercent(0.5, 'clockwise'); // display styles are defined as an enum at BrailleStyleEnum, a type alias at BrailleStyle, and an array at BrailleStyleArray
 ```
 
 #### Note on binary numbers
