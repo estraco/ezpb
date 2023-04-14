@@ -68,7 +68,7 @@ character.xorGrid([
     [false, false]
 ]); // xor against grid
 character.xorBinary(0b00010000); // xor against binary number
-character.togglePoint(1, 3, true); // toggle third dot down on the right
+character.togglePoint(1, 3); // toggle third dot down on the right
 
 const unicode = character.getBinary(); // get the unicode character code
 const char = character.getChar(); // get the string representation of the character
