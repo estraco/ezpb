@@ -1,5 +1,5 @@
 {
-  "name": "progressbar-ts",
+  "name": "ezpb",
   "version": "0.1.0",
   "description": "Zero dependency progress bar for node.js with complete typescript support",
   "main": "build",

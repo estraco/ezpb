@@ -1,4 +1,4 @@
-# progressbar-ts
+# ezpb
 
 ## Description
 
@@ -10,7 +10,7 @@ It also has a few other features like an axios progress handler and an http prog
 ## Usage
 
 ```typescript
-import { ProgressBar } from 'progressbar-ts';
+import { ProgressBar } from 'ezpb';
 
 const bar = new ProgressBar('name', 100 /* total */);
 
@@ -54,7 +54,7 @@ Call `bar.httpProgress()(response)` to start the progress bar.
 ### Braille
 
 ```typescript
-import { BrailleCharacter } from 'progressbar-ts/braille';
+import { BrailleCharacter } from 'ezpb/braille';
 
 const character = new BrailleCharacter();
 
