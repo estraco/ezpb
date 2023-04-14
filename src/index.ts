@@ -33,13 +33,13 @@ export default class ProgressBar {
         }
     }
 
-    private render(percentStyle: BrailleStyle) {
+    private render() {
         process.stdout.cursorTo(0);
-        process.stdout.write(this.getLine(percentStyle));
+        process.stdout.write(this.getLine());
     }
 
-    private getLine(percentStyle: BrailleStyle) {
-        const bar = this.getBar(percentStyle);
+    private getLine() {
+        const bar = this.getBar();
         const percent = this.value / this.max;
         let percentString = (percent * 100).toFixed(2);
 
@@ -69,7 +69,7 @@ export default class ProgressBar {
         return process.stdout.columns - this.name.length - `  [] 100.00% (${this.max}/${this.max})`.length;
     }
 
-    private getBar(percentStyle: BrailleStyle) {
+    private getBar() {
         const percent = this.value / this.max;
 
         this.barLength ??= this.getBarLength();
@@ -85,11 +85,11 @@ export default class ProgressBar {
         const incompleteQuantity = this.value - completeQuantity;
         const incompletePercent = incompleteQuantity / quantity;
 
-        return `[${BrailleCharacter.fromBinary(0b11111111).getChar().repeat(filled)}${percent === 1
+        return `[${BrailleCharacter.fromUnicodeStyleBinary(0b11111111).getChar().repeat(filled)}${percent === 1
             ? ''
-            : BrailleCharacter.fromPercent(incompletePercent, percentStyle)}${percent === 1 // eslint-disable-next-line indent
+            : BrailleCharacter.fromPercent(incompletePercent, this.style)}${percent === 1 // eslint-disable-next-line indent
                 ? '' // eslint-disable-next-line indent
-                : BrailleCharacter.fromBinary(0b00000000).getChar().repeat(empty)}]`;
+                : BrailleCharacter.fromUnicodeStyleBinary(0b00000000).getChar().repeat(empty)}]`;
     }
 
     axiosProgress() {
@@ -130,7 +130,7 @@ export default class ProgressBar {
         }
 
         this.interval = setInterval(() => {
-            this.render(this.style);
+            this.render();
         }, refreshInterval);
     }
 
@@ -139,7 +139,7 @@ export default class ProgressBar {
             clearInterval(this.interval);
             this.interval = null;
 
-            this.render(this.style);
+            this.render();
 
             process.stdout.write('\n');
         }

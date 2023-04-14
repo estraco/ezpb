@@ -1,6 +1,6 @@
 {
   "name": "ezpb",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Zero dependency progress bar for node.js with complete typescript support",
   "main": "build",
   "scripts": {

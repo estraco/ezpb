@@ -6,7 +6,7 @@ import https from 'https';
 function testAxios() {
     const url = 'http://ipv4.download.thinkbroadband.com/100MB.zip';
 
-    const bar = new ProgressBar('100MB.zip', 1, 'fill-left-bottom');
+    const bar = new ProgressBar('100MB.zip', 1, 'clockwise');
 
     bar.start(15);
 
@@ -18,7 +18,7 @@ function testAxios() {
 function testHttp() {
     const url = 'http://ipv4.download.thinkbroadband.com/100MB.zip';
 
-    const bar = new ProgressBar('100MB.zip', 1, 'fill-left-bottom');
+    const bar = new ProgressBar('100MB.zip', 1, 'clockwise');
 
     bar.start(15);
 

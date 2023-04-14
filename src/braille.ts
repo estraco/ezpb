@@ -5,6 +5,17 @@ export type BrailleGrid = [
     [boolean, boolean]
 ];
 
+export type SingleBits = 0b00000001 |
+    0b00000010 |
+    0b00000100 |
+    0b00001000 |
+    0b00010000 |
+    0b00100000 |
+    0b01000000 |
+    0b10000000;
+
+export type Indices = [number, number][][];
+
 export enum BrailleStyleEnum {
     Clockwise = 'clockwise',
     CounterClockwise = 'counter-clockwise',
@@ -17,7 +28,7 @@ export enum BrailleStyleEnum {
     FillRightTop = 'fill-right-top',
     FillRightBottom = 'fill-right-bottom'
 }
-export type BrailleStyle = 'ccw' | 'cw' | `${'counter-' | ''}clockwise` | `fill-${`top-${'left' | 'right'}` | `bottom-${'left' | 'right'}` | `left-${'top' | 'bottom'}` | `right-${'top' | 'bottom'}`}`;
+export type BrailleStyle = 'ccw' | 'cw' | `${'counter-' | ''}clockwise` | `fill-${`top-${'left' | 'right'}` | `bottom-${'left' | 'right'}` | `left-${'top' | 'bottom'}` | `right-${'top' | 'bottom'}`}` | Indices;
 export const BrailleStyleArray: BrailleStyle[] = [
     'ccw',
     'cw',
@@ -34,8 +45,7 @@ export const BrailleStyleArray: BrailleStyle[] = [
 ];
 
 export class BrailleCharacter {
-    num = 0;
-    grid: BrailleGrid = [
+    private grid: BrailleGrid = [
         [false, false],
         [false, false],
         [false, false],
@@ -43,22 +53,43 @@ export class BrailleCharacter {
     ];
 
     setPoint(x: number, y: number, value: boolean) {
-        this.grid[x][y] = value;
+        this.grid[y][x] = value;
 
         return this;
     }
 
-    setBit(bit: number, value: boolean) {
-        const indices = [
-            [0, 0],
-            [1, 0],
-            [2, 0],
-            [0, 1],
-            [1, 1],
-            [2, 1],
-            [3, 0],
-            [3, 1]
-        ];
+    setBit(bit: SingleBits, value: boolean) {
+        const indices: {
+            [key in SingleBits]: [number, number];
+        } = {
+            0b00000001: [0, 0],
+            0b00000010: [0, 1],
+            0b00000100: [0, 2],
+            0b00001000: [1, 0],
+            0b00010000: [1, 1],
+            0b00100000: [1, 2],
+            0b01000000: [0, 3],
+            0b10000000: [1, 3]
+        };
+
+        const [x, y] = indices[bit];
+
+        return this.setPoint(x, y, value);
+    }
+
+    setUnicodeBit(bit: SingleBits, value: boolean) {
+        const indices: {
+            [key in SingleBits]: [number, number];
+        } = {
+            0b00000001: [0, 0],
+            0b00000010: [0, 1],
+            0b00000100: [0, 2],
+            0b00001000: [0, 3],
+            0b00010000: [1, 0],
+            0b00100000: [1, 1],
+            0b01000000: [1, 2],
+            0b10000000: [1, 3]
+        };
 
         const [x, y] = indices[bit];
 
@@ -70,16 +101,17 @@ export class BrailleCharacter {
     }
 
     xorGrid(grid: BrailleGrid) {
-        for (let x = 0; x < 4; x++) {
-            for (let y = 0; y < 2; y++) {
-                this.setPoint(x, y, this.grid[x][y] !== grid[x][y]);
+        for (let y = 0; y < 4; y++) {
+            for (let x = 0; x < 2; x++) {
+                // console.log(x, y, this.grid[y][x], grid[y][x], this.grid[y][x] !== grid[y][x]);
+                this.setPoint(x, y, this.grid[y][x] !== grid[y][x]);
             }
         }
 
         return this;
     }
 
-    xorBinary(binary: number) {
+    xorUnicodeStyleBinary(binary: number) {
         const grid: BrailleGrid = [
             [false, false],
             [false, false],
@@ -99,14 +131,36 @@ export class BrailleCharacter {
         return this.xorGrid(grid);
     }
 
+    xorBinary(binary: number) {
+        const grid: BrailleGrid = [
+            [false, false],
+            [false, false],
+            [false, false],
+            [false, false]
+        ];
+
+        grid[3][0] = ((binary >> 0) & 1) === 1;
+        grid[3][1] = ((binary >> 1) & 1) === 1;
+        grid[2][0] = ((binary >> 2) & 1) === 1;
+        grid[2][1] = ((binary >> 3) & 1) === 1;
+        grid[1][0] = ((binary >> 4) & 1) === 1;
+        grid[1][1] = ((binary >> 5) & 1) === 1;
+        grid[0][0] = ((binary >> 6) & 1) === 1;
+        grid[0][1] = ((binary >> 7) & 1) === 1;
+
+        return this.xorGrid(grid);
+    }
+
     togglePoint(x: number, y: number) {
-        this.setPoint(x, y, !this.grid[x][y]);
+        this.setPoint(x, y, !this.grid[y][x]);
 
         return this;
     }
 
     getBinary() {
-        let val = 0x2800;
+        let val = 0;
+
+        // console.log(this.grid);
 
         val |= +this.grid[0][0] << 0;
         val |= +this.grid[1][0] << 1;
@@ -120,20 +174,60 @@ export class BrailleCharacter {
         return val;
     }
 
-    getChar() {
-        return String.fromCharCode(this.getBinary());
+    getUnicode() {
+        return 0x2800 + this.getBinary();
     }
 
-    [Symbol.toPrimitive](hint: 'string' | 'number') {
-        if (hint === 'string') {
+    getChar() {
+        return String.fromCharCode(this.getUnicode());
+    }
+
+    getGrid() {
+        return this.grid;
+    }
+
+    setGrid(grid: BrailleGrid) {
+        this.grid = grid;
+
+        return this;
+    }
+
+    clone(): BrailleCharacter {
+        const char = new BrailleCharacter();
+
+        for (let y = 0; y < 4; y++) {
+            for (let x = 0; x < 2; x++) {
+                char.setPoint(x, y, this.grid[y][x]);
+            }
+        }
+
+        return char;
+    }
+
+    getIndices() {
+        const indices: Indices[0] = [];
+
+        for (let y = 0; y < 4; y++) {
+            for (let x = 0; x < 2; x++) {
+                if (this.grid[y][x]) {
+                    indices.push([x, y]);
+                }
+            }
+        }
+
+        return indices;
+    }
+
+    [Symbol.toPrimitive](hint: 'string' | 'number' | 'default') {
+        if (hint === 'string' || hint === 'default') {
             return this.getChar();
         }
 
-        return this.getBinary();
+        return this.getUnicode();
     }
 
-    [Symbol.toStringTag]() {
-        return 'BrailleCharacter';
+    get [Symbol.toStringTag]() {
+        return this.getChar();
     }
 
     toString() {
@@ -143,163 +237,164 @@ export class BrailleCharacter {
     static fromPercent(percent: number, style: BrailleStyle = 'cw') {
         const char = new BrailleCharacter();
 
-        let indices: [number, number][];
+        let indices: Indices;
 
+        if (Array.isArray(style)) {
+            indices = style;
+        } else {
+            indices = BrailleCharacter.mapStyle(style);
+        }
+
+        const filled = percent * indices.length;
+
+        for (let i = 0; i < filled; i++) {
+            // const [x, y] = indices[i];
+            const chunk = indices[i];
+
+            for (let j = 0; j < chunk.length; j++) {
+                const [x, y] = chunk[j];
+
+                char.togglePoint(x, y);
+            }
+        }
+
+        return char;
+    }
+
+    static mapStyle(style: BrailleStyle): Indices {
         switch (style) {
             case 'cw':
             case 'clockwise': {
-                indices = [
-                    [3, 0],
-                    [2, 0],
-                    [1, 0],
-                    [0, 0],
-                    [0, 1],
-                    [1, 1],
-                    [2, 1],
-                    [3, 1]
+                return [
+                    [[0, 3]],
+                    [[0, 2]],
+                    [[0, 1]],
+                    [[0, 0]],
+                    [[1, 0]],
+                    [[1, 1]],
+                    [[1, 2]],
+                    [[1, 3]]
                 ];
-
-                break;
             }
             case 'ccw':
             case 'counter-clockwise': {
-                indices = [
-                    [3, 1],
-                    [2, 1],
-                    [1, 1],
-                    [0, 1],
-                    [0, 0],
-                    [1, 0],
-                    [2, 0],
-                    [3, 0]
+                return [
+                    [[1, 3]],
+                    [[1, 2]],
+                    [[1, 1]],
+                    [[1, 0]],
+                    [[0, 0]],
+                    [[0, 1]],
+                    [[0, 2]],
+                    [[0, 3]]
                 ];
-
-                break;
             }
             case 'fill-top-left': {
-                indices = [
-                    [0, 0],
-                    [0, 1],
-                    [1, 0],
-                    [1, 1],
-                    [2, 0],
-                    [2, 1],
-                    [3, 0],
-                    [3, 1]
+                return [
+                    [[0, 0]],
+                    [[1, 0]],
+                    [[0, 1]],
+                    [[1, 1]],
+                    [[0, 2]],
+                    [[1, 2]],
+                    [[0, 3]],
+                    [[1, 3]]
                 ];
-
-                break;
             }
             case 'fill-top-right': {
-                indices = [
-                    [0, 1],
-                    [0, 0],
-                    [1, 1],
-                    [1, 0],
-                    [2, 1],
-                    [2, 0],
-                    [3, 1],
-                    [3, 0]
+                return [
+                    [[1, 0]],
+                    [[0, 0]],
+                    [[1, 1]],
+                    [[0, 1]],
+                    [[1, 2]],
+                    [[0, 2]],
+                    [[1, 3]],
+                    [[0, 3]]
                 ];
-
-                break;
             }
             case 'fill-bottom-left': {
-                indices = [
-                    [3, 0],
-                    [3, 1],
-                    [2, 0],
-                    [2, 1],
-                    [1, 0],
-                    [1, 1],
-                    [0, 0],
-                    [0, 1]
+                return [
+                    [[0, 3]],
+                    [[1, 3]],
+                    [[0, 2]],
+                    [[1, 2]],
+                    [[0, 1]],
+                    [[1, 1]],
+                    [[0, 0]],
+                    [[1, 0]]
                 ];
-
-                break;
             }
             case 'fill-bottom-right': {
-                indices = [
-                    [3, 1],
-                    [3, 0],
-                    [2, 1],
-                    [2, 0],
-                    [1, 1],
-                    [1, 0],
-                    [0, 1],
-                    [0, 0]
+                return [
+                    [[1, 3]],
+                    [[0, 3]],
+                    [[1, 2]],
+                    [[0, 2]],
+                    [[1, 1]],
+                    [[0, 1]],
+                    [[1, 0]],
+                    [[0, 0]]
                 ];
-
-                break;
             }
             case 'fill-left-top': {
-                indices = [
-                    [0, 0],
-                    [1, 0],
-                    [2, 0],
-                    [3, 0],
-                    [0, 1],
-                    [1, 1],
-                    [2, 1],
-                    [3, 1]
+                return [
+                    [[0, 0]],
+                    [[0, 1]],
+                    [[0, 2]],
+                    [[0, 3]],
+                    [[1, 0]],
+                    [[1, 1]],
+                    [[1, 2]],
+                    [[1, 3]]
                 ];
-
-                break;
             }
             case 'fill-left-bottom': {
-                indices = [
-                    [3, 0],
-                    [2, 0],
-                    [1, 0],
-                    [0, 0],
-                    [3, 1],
-                    [2, 1],
-                    [1, 1],
-                    [0, 1]
+                return [
+                    [[0, 3]],
+                    [[0, 2]],
+                    [[0, 1]],
+                    [[0, 0]],
+                    [[1, 3]],
+                    [[1, 2]],
+                    [[1, 1]],
+                    [[1, 0]]
                 ];
-
-                break;
             }
             case 'fill-right-top': {
-                indices = [
-                    [0, 1],
-                    [1, 1],
-                    [2, 1],
-                    [3, 1],
-                    [0, 0],
-                    [1, 0],
-                    [2, 0],
-                    [3, 0]
+                return [
+                    [[1, 0]],
+                    [[1, 1]],
+                    [[1, 2]],
+                    [[1, 3]],
+                    [[0, 0]],
+                    [[0, 1]],
+                    [[0, 2]],
+                    [[0, 3]]
                 ];
-
-                break;
             }
             case 'fill-right-bottom': {
-                indices = [
-                    [3, 1],
-                    [2, 1],
-                    [1, 1],
-                    [0, 1],
-                    [3, 0],
-                    [2, 0],
-                    [1, 0],
-                    [0, 0]
+                return [
+                    [[1, 3]],
+                    [[1, 2]],
+                    [[1, 1]],
+                    [[1, 0]],
+                    [[0, 3]],
+                    [[0, 2]],
+                    [[0, 1]],
+                    [[0, 0]]
                 ];
-
-                break;
             }
             default: {
                 throw new Error(`Unknown style: ${style}`);
             }
         }
+    }
 
-        const filled = Math.round(percent * 8);
+    static fromUnicodeStyleBinary(binary: number) {
+        const char = new BrailleCharacter();
 
-        for (let i = 0; i < filled; i++) {
-            const [x, y] = indices[i];
-
-            char.setPoint(x, y, true);
-        }
+        char.xorUnicodeStyleBinary(binary);
 
         return char;
     }
@@ -313,7 +408,7 @@ export class BrailleCharacter {
     }
 
     static fromChar(char: string) {
-        return BrailleCharacter.fromBinary(char.charCodeAt(0) - 0x2800);
+        return BrailleCharacter.fromUnicodeStyleBinary(char.charCodeAt(0) - 0x2800);
     }
 
     static fromGrid(grid: BrailleGrid) {
