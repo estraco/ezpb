@@ -3,7 +3,7 @@
 ## Description
 
 This was made because I wanted a progress bar that was easy to use and integrate with other libraries, and I was bored. \
-I hve attempted to build one from scratch for a few other projects, but it always ended up being buggy and hard to use. \
+I have attempted to build one from scratch for a few other projects, but it always ended up being buggy and hard to use. \
 It uses the [Braille Unicode characters](https://en.wikipedia.org/wiki/Braille_Patterns) to display the progress bar. \
 It also has a few other features like an axios progress handler and an http progress handler.
 
