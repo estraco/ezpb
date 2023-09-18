@@ -7,6 +7,7 @@ export default class ProgressBar {
     value: number;
     name: string;
 
+    refreshMethod: 'interval' | 'event' = 'interval';
     refreshInterval: number;
     interval: NodeJS.Timeout;
 
@@ -25,10 +26,16 @@ export default class ProgressBar {
         });
     }
 
+    setRefreshMethod(method: 'interval' | 'event') {
+        this.refreshMethod = method;
+    }
+
     update(value: number) {
         this.value = Math.min(value, this.max);
 
-        if (this.value === this.max) {
+        if (this.refreshMethod === 'event') {
+            this.render();
+        } else if (this.value === this.max) {
             this.stop();
         }
     }

@@ -1,40 +1,40 @@
 {
-  "name": "ezpb",
-  "version": "0.1.2",
-  "description": "Zero dependency progress bar for node.js with complete typescript support",
-  "main": "build",
-  "scripts": {
-    "build": "tsc"
-  },
-  "author": {
-    "name": "1nch",
-    "url": "https://discord.com/users/787143988514914324"
-  },
-  "devDependencies": {
-    "@types/node": "^18.11.9",
-    "@typescript-eslint/eslint-plugin": "^5.42.0",
-    "@typescript-eslint/parser": "^5.42.0",
-    "axios": "^1.3.5",
-    "eslint": "^8.25.0",
-    "typescript": "^4.8.4"
-  },
-  "exports": {
-    ".": {
-      "import": "./build/index.js",
-      "require": "./build/index.js"
+    "name": "ezpb",
+    "version": "0.1.3",
+    "description": "Zero dependency progress bar for node.js with complete typescript support",
+    "main": "build",
+    "scripts": {
+        "build": "tsc"
     },
-    "./braille": {
-      "import": "./build/braille.js",
-      "require": "./build/braille.js"
-    }
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/1nchhh/progressbar-ts.git"
-  },
-  "bugs": {
-    "url": "https://github.com/1nchhh/progressbar-ts/issues"
-  },
-  "homepage": "https://github.com/1nchhh/progressbar-ts#readme",
-  "license": "GPL-3.0"
+    "author": {
+        "name": "1nch",
+        "url": "https://discord.com/users/787143988514914324"
+    },
+    "devDependencies": {
+        "@types/node": "^18.11.9",
+        "@typescript-eslint/eslint-plugin": "^5.42.0",
+        "@typescript-eslint/parser": "^5.42.0",
+        "axios": "^1.3.5",
+        "eslint": "^8.25.0",
+        "typescript": "^4.8.4"
+    },
+    "exports": {
+        ".": {
+            "import": "./build/index.js",
+            "require": "./build/index.js"
+        },
+        "./braille": {
+            "import": "./build/braille.js",
+            "require": "./build/braille.js"
+        }
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/1nchhh/progressbar-ts.git"
+    },
+    "bugs": {
+        "url": "https://github.com/1nchhh/progressbar-ts/issues"
+    },
+    "homepage": "https://github.com/1nchhh/progressbar-ts#readme",
+    "license": "GPL-3.0"
 }
