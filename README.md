@@ -144,7 +144,7 @@ console.log(str); // 256 braille characters
 
 #### Note on binary numbers
 
-The binary numbers in unicode format used in this module are in the following format below `(x, y): binary literal [bit mask]` where (0, 0) is the top left dot and (3, 1) is the bottom right dot:
+The binary numbers in Unicode's positioning format used in this module are in the following format below `(x, y): binary literal [bit mask]` where (0, 0) is the top left dot and (1, 3) is the bottom right dot:
 
 ```typescript
 (0, 0): 0b00000001 [1 << 0]
@@ -157,7 +157,7 @@ The binary numbers in unicode format used in this module are in the following fo
 (1, 3): 0b10000000 [1 << 7]
 ```
 
-The binary numbers not in unicode format are in the following format below `(x, y): binary literal [bit mask]` where (0, 0) is the top left dot and (3, 1) is the bottom right dot:
+The binary numbers not in Unicode's positioning format are in the following format below `(x, y): binary literal [bit mask]` where (0, 0) is the top left dot and (1, 3) is the bottom right dot:
 
 ```typescript
 (0, 0): 0b00000001 [1 << 0]
